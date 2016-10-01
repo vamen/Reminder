@@ -1,7 +1,11 @@
 package com.vivekbalachandra.android.reminder;
 
+import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -98,8 +103,28 @@ public class speechReciver extends AppCompatActivity   {
     }
 
     private void getAudio() {
+        if(isExternalStorageWritable()) {
+            File file = new File(ConstantData.filePath+"audio"+".3gp");
 
+            MediaRecorder recorder = new MediaRecorder();
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            recorder.setOutputFile(file);
+            recorder.prepare();
+            recorder.start();
+        }
+        }
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
     }
+
+
 
 
 }
